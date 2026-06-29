@@ -2,7 +2,7 @@ import { useState } from 'react';
 // استيراد المكونات Container الجديدة
 import StudentManagementContainer from './components/StudentManagementContainer';
 import SignIn from './components/SignIn';
-import RoomManagementContainer from './components/RoomManagementContainer';
+import SessionsManagementContainer from './components/SessionsManagementContainer';
 import CurriculumManagementContainer from './components/CurriculumManagementContainer';
 import Sidebar from './components/layout/Sidebar';
 import PageHeader from './components/layout/PageHeader';
@@ -55,9 +55,9 @@ export default function App() {
 
   return (
     <>
-      {/* 2. واجهة إدارة القاعات والحجوزات الكاملة */}
-      {currentView === 'Room Management' && (
-        <RoomManagementContainer onLogOut={handleLogOut} onViewChange={handleViewChange} />
+      {/* 2. واجهة إدارة الجلسات والحجوزات الكاملة */}
+      {currentView === 'Sessions Management' && (
+        <SessionsManagementContainer onLogOut={handleLogOut} onViewChange={handleViewChange} />
       )}
 
       {/* 3. واجهة إدارة المناهج والملفات الكاملة */}
@@ -84,8 +84,8 @@ export default function App() {
             </div>
             <div className="bg-white p-6 rounded-[12px] border border-slate-100 shadow-sm text-left">
               <span className="text-2xl">🏫</span>
-              <h3 className="text-slate-500 text-[14px] mt-2 font-medium">Rooms Occupied</h3>
-              <p className="text-slate-800 text-[28px] font-bold mt-1 font-mono">12 / 16</p>
+              <h3 className="text-slate-500 text-[14px] mt-2 font-medium">Sessions Today</h3>
+              <p className="text-slate-800 text-[28px] font-bold mt-1 font-mono">28 / 32</p>
             </div>
             <div className="bg-white p-6 rounded-[12px] border border-slate-100 shadow-sm text-left">
               <span className="text-2xl">📚</span>
