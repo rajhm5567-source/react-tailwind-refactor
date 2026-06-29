@@ -1,111 +1,215 @@
-// // src/components/CurriculumManagementView.jsx
-// import React, { useState } from 'react';
+import Sidebar from './layout/Sidebar';
+import PageHeader from './layout/PageHeader';
 
-// const initialMaterials = {
-//   English: [
-//     { id: 'M-ENG-01', title: 'Interchange Level 1 Textbook', format: 'PDF', size: '14.2 MB', category: 'Textbook' },
-//     { id: 'M-ENG-02', title: 'Cambridge Listening Tracks Pack 1', format: 'MP3', size: '45.8 MB', category: 'Audio' },
-//     { id: 'M-ENG-03', title: 'Business English Vocabulary Workbook', format: 'PDF', size: '8.1 MB', category: 'Workbook' }
-//   ],
-//   French: [
-//     { id: 'M-FRE-01', title: 'Le Nouveau Taxi A1', format: 'PDF', size: '18.4 MB', category: 'Textbook' },
-//     { id: 'M-FRE-02', title: 'French Pronunciation Guide tracks', format: 'MP3', size: '32.1 MB', category: 'Audio' }
-//   ],
-//   German: [
-//     { id: 'M-GER-01', title: 'Menschen A1.1 Kursbuch', format: 'PDF', size: '22.0 MB', category: 'Textbook' },
-//     { id: 'M-GER-02', title: 'Studio D B1 Audio Elements', format: 'WAV', size: '112.5 MB', category: 'Audio' }
-//   ],
-//   Spanish: [
-//     { id: 'M-SPA-01', title: 'Aula Internacional 1 Nueva Edición', format: 'PDF', size: '25.6 MB', category: 'Textbook' }
-//   ]
-// };
+export default function CurriculumManagementView({
+  onLogOut,
+  onViewChange,
+  languages,
+  activeLanguage,
+  levels,
+  selectedLevelFilter,
+  materialType,
+  uploadLevel,
+  newFileName,
+  displayedMaterials,
+  onSetActiveLanguage,
+  onSetSelectedLevelFilter,
+  onSetMaterialType,
+  onSetUploadLevel,
+  onSetNewFileName,
+  onUploadMaterial,
+  onDeleteMaterial,
+}) {
+  return (
+    <div className="flex min-h-screen bg-[#444444] p-6 font-sans justify-center items-center relative">
+      <div className="flex w-full max-w-[1841px] h-[851px] bg-[#F8FAFC] rounded-[2px] overflow-hidden border border-white/10 shadow-2xl">
+        
+        <Sidebar currentView="Curriculum Management" onViewChange={onViewChange} onLogOut={onLogOut} />
 
-// export default function CurriculumManagementView() {
-//   const [activeTab, setActiveTab] = useState('English'); // فلاتر اللغات كما هي في الـ Figma التابع لك
-
-//   return (
-//     <div className="space-y-6 text-left font-['Inter']">
-      
-//       {/* شريط اختيار اللغة المعتمد والمصمم بدقة حسب مواصفات Figma */}
-//       <div className="bg-white rounded-[14px] border border-slate-200/60 shadow-sm px-2 flex border-b border-slate-200">
-//         {['English', 'French', 'German', 'Spanish'].map((lang) => (
-//           <button
-//             key={lang}
-//             onClick={() => setActiveTab(lang)}
-//             className={`relative py-4 px-6 text-[14.6px] font-semibold transition-all duration-150 ${
-//               activeTab === lang 
-//                 ? 'text-[#0F172A]' 
-//                 : 'text-[#62748E] hover:text-slate-800'
-//             }`}
-//           >
-//             {lang}
-//             {activeTab === lang && (
-//               <div className="absolute bottom-0 left-0 right-0 h-[4px] bg-[#8B0000] rounded-t-full" />
-//             )}
-//           </button>
-//         ))}
-//       </div>
-
-//       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-//         {/* صندوق الرفع الذكي للملفات */}
-//         <div className="bg-white p-6 rounded-[14px] border border-slate-200/60 shadow-sm lg:col-span-1">
-//           <h3 className="text-[16px] font-bold text-slate-800 mb-4">Upload Educational Materials</h3>
+        {/* ==================== المحتوى الأيمن الأساسي بالكامل ==================== */}
+        <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
           
-//           <div 
-//             onClick={() => alert('File explorer opening...')}
-//             className="border-2 border-dashed border-slate-200 rounded-[10px] p-8 text-center bg-slate-50/50 hover:bg-slate-50 transition-all cursor-pointer group"
-//           >
-//             <span className="text-4xl block mb-3 group-hover:scale-110 transition-transform">📁</span>
-//             <p className="text-[13.3px] text-[#45556C] font-normal">
-//               Drag & Drop file here, or <span className="text-[#8B0000] font-semibold underline">Browse</span>
-//             </p>
-//             <p className="text-[11px] text-slate-400 mt-2 leading-relaxed">
-//               Supports secure PDF textbooks or high-quality MP3 audio tracks for curriculum.
-//             </p>
-//           </div>
+          <PageHeader variant="curriculum" title="Curriculum Management" />
 
-//           <button className="w-full mt-4 h-[40px] bg-[#8B0000] text-white rounded-[8px] text-[13px] font-semibold hover:bg-[#660000] transition-colors shadow-sm">
-//             Process & Register Document
-//           </button>
-//         </div>
+          {/* ==================== 3. شريط التحكم والتصفية العلوي (Filter Bar) ==================== */}
+          <div className="h-[72px] bg-white border-b border-[#E2E8F0] flex items-center justify-between px-8 flex-shrink-0">
+            {/* ألسنة تبديل لغة الكورس الفعالة */}
+            <div className="flex items-center gap-2 h-full">
+              {languages.map((lang) => (
+                <button
+                  key={lang}
+                  onClick={() => onSetActiveLanguage(lang)}
+                  className={`px-5 h-full text-[15px] font-semibold font-['Inter'] transition-all relative ${
+                    activeLanguage === lang ? 'text-[#8B0000]' : 'text-gray-400 hover:text-gray-600'
+                  }`}
+                >
+                  {lang} Course
+                  {activeLanguage === lang && (
+                    <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#8B0000] rounded-t-full" />
+                  )}
+                </button>
+              ))}
+            </div>
 
-//         {/* جدول استعراض الملفات حسب اللغة النشطة */}
-//         <div className="bg-white rounded-[14px] border border-slate-200/60 shadow-sm overflow-hidden lg:col-span-2">
-//           <div className="p-5 border-b border-slate-100 bg-slate-50/50">
-//             <h4 className="font-bold text-slate-800 text-[15px]">Active Materials under ({activeTab})</h4>
-//           </div>
-          
-//           <div className="overflow-x-auto">
-//             <table className="w-full text-left border-collapse">
-//               <thead>
-//                 <tr className="border-b border-slate-100 text-slate-400 text-[11px] uppercase tracking-wider font-semibold bg-slate-50/20">
-//                   <th className="py-3.5 px-6">Code</th>
-//                   <th className="py-3.5 px-6">Material Title</th>
-//                   <th className="py-3.5 px-6">Category</th>
-//                   <th className="py-3.5 px-6">Format</th>
-//                   <th className="py-3.5 px-6">Size</th>
-//                 </tr>
-//               </thead>
-//               <tbody className="text-[13.5px] text-slate-700 divide-y divide-slate-100">
-//                 {initialMaterials[activeTab].map((mat) => (
-//                   <tr key={mat.id} className="hover:bg-slate-50/30 transition-colors">
-//                     <td className="py-3.5 px-6 font-mono text-xs text-slate-500">{mat.id}</td>
-//                     <td className="py-3.5 px-6 font-medium text-slate-900">{mat.title}</td>
-//                     <td className="py-3.5 px-6 text-slate-500">{mat.category}</td>
-//                     <td className="py-3.5 px-6">
-//                       <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${mat.format === 'PDF' ? 'bg-red-50 text-red-600 border border-red-100' : 'bg-indigo-50 text-indigo-600 border border-indigo-100'}`}>
-//                         {mat.format}
-//                       </span>
-//                     </td>
-//                     <td className="py-3.5 px-6 font-mono text-slate-500 text-xs">{mat.size}</td>
-//                   </tr>
-//                 ))}
-//               </tbody>
-//             </table>
-//           </div>
-//         </div>
-//       </div>
+            {/* أداة الاختيار والتصفية حسب المستويات */}
+            <div className="flex items-center gap-3">
+              <span className="text-[14px] font-medium text-gray-500 font-['Inter']">Filter by:</span>
+              <select
+                value={selectedLevelFilter}
+                onChange={(e) => onSetSelectedLevelFilter(e.target.value)}
+                className="w-[120px] h-[40px] bg-white border border-[#D9D9D9] rounded-[8px] px-3 text-[16px] font-['Inter'] font-normal text-[#1E1E1E] outline-none cursor-pointer focus:border-[#8B0000]"
+              >
+                {levels.map(lvl => (
+                  <option key={lvl} value={lvl}>{lvl}</option>
+                ))}
+              </select>
+            </div>
+          </div>
 
-//     </div>
-//   );
-// }
+          {/* ==================== 4. ساحة العمل الأساسية ==================== */}
+          <div className="flex-1 flex overflow-hidden">
+            
+            {/* [اليسار] - استعراض المواد التعليمية */}
+            <div className="flex-1 p-8 overflow-y-auto bg-[#F8FAFC]">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-[18px] font-bold text-slate-800 font-['Inter']">
+                  Available Materials ({displayedMaterials.length})
+                </h2>
+                <span className="text-[12px] bg-[#8B0000]/5 text-[#8B0000] px-3 py-1 rounded-md font-bold font-mono">
+                  {activeLanguage} / {selectedLevelFilter}
+                </span>
+              </div>
+
+              {displayedMaterials.length === 0 ? (
+                <div className="w-full h-[260px] border border-dashed border-slate-200 rounded-[12px] bg-white flex flex-col items-center justify-center p-6">
+                  <span className="text-[36px] mb-2">📂</span>
+                  <p className="text-[14px] text-slate-400 font-medium font-['Inter']">No curriculum items match your selection.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+                  {displayedMaterials.map((item) => (
+                    <div 
+                      key={item.id}
+                      className={`bg-white p-4 rounded-[12px] border flex items-center justify-between shadow-sm transition-all hover:shadow-md ${
+                        item.type === 'pdf' ? 'border-l-4 border-l-[#FB2C36] border-slate-100' : 'border-l-4 border-l-[#AD46FF] border-slate-100'
+                      }`}
+                    >
+                      <div className="flex items-center gap-4 text-left min-w-0">
+                        {/* أيقونة مميزة ملونة حسب نوع المادة */}
+                        <div className={`w-[44px] h-[44px] rounded-[10px] flex items-center justify-center text-[20px] flex-shrink-0 ${
+                          item.type === 'pdf' ? 'bg-red-50 text-[#FB2C36]' : 'bg-purple-50 text-[#AD46FF]'
+                        }`}>
+                          {item.type === 'pdf' ? '📄' : '🎵'}
+                        </div>
+                        
+                        <div className="flex flex-col min-w-0">
+                          <span className="text-[14px] font-bold text-slate-800 truncate pr-2 font-['Inter']" title={item.name}>
+                            {item.name}
+                          </span>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            <span className="text-[10px] font-extrabold px-1.5 py-0.5 bg-slate-100 text-slate-600 rounded font-mono">
+                              {item.level}
+                            </span>
+                            <span className="text-[11px] text-slate-400 font-mono">{item.size}</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* إجراءات الحذف */}
+                      <button
+                        onClick={() => onDeleteMaterial(item.id)}
+                        className="w-9 h-9 rounded-[8px] bg-slate-50 hover:bg-red-50 text-slate-400 hover:text-red-500 flex items-center justify-center transition-colors border border-slate-100"
+                        title="Delete resource"
+                      >
+                        🗑️
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* [اليمين] - لوحة رفع المواد */}
+            <div className="w-[360px] bg-white border-l border-[#E2E8F0] p-6 flex flex-col gap-5 overflow-y-auto flex-shrink-0 h-full shadow-sm">
+              <div className="border-b border-slate-100 pb-3 text-left">
+                <h3 className="text-[16px] font-bold text-gray-800 font-['Inter']">Upload New Material</h3>
+                <p className="text-[12px] text-gray-400 mt-0.5">Add data assets directly into the system</p>
+              </div>
+
+              <form onSubmit={onUploadMaterial} className="flex flex-col gap-4">
+                {/* اسم الملف */}
+                <div className="flex flex-col gap-1.5 text-left">
+                  <label className="text-[13px] font-semibold text-gray-700 font-['Inter']">Material Title</label>
+                  <input 
+                    type="text"
+                    placeholder="e.g. Dialogue Practice"
+                    value={newFileName}
+                    onChange={(e) => onSetNewFileName(e.target.value)}
+                    className="w-full h-[40px] px-3 border border-[#D9D9D9] rounded-[8px] text-[14px] font-['Inter'] outline-none focus:border-[#8B0000]"
+                  />
+                </div>
+
+                {/* صيغة ونوع المادة */}
+                <div className="flex flex-col gap-1.5 text-left">
+                  <label className="text-[13px] font-semibold text-gray-700 font-['Inter']">Material Format</label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => onSetMaterialType('pdf')}
+                      className={`h-[38px] rounded-[8px] border font-semibold text-[13px] transition-all ${
+                        materialType === 'pdf' ? 'border-[#FB2C36] bg-red-50/50 text-[#FB2C36]' : 'border-gray-200 text-gray-500 bg-white'
+                      }`}
+                    >
+                      📄 Document (PDF)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => onSetMaterialType('audio')}
+                      className={`h-[38px] rounded-[8px] border font-semibold text-[13px] transition-all ${
+                        materialType === 'audio' ? 'border-[#AD46FF] bg-purple-50/50 text-[#AD46FF]' : 'border-gray-200 text-gray-500 bg-white'
+                      }`}
+                    >
+                      🎵 Audio (MP3)
+                    </button>
+                  </div>
+                </div>
+
+                {/* تصنيف المستوى */}
+                <div className="flex flex-col gap-1.5 text-left">
+                  <label className="text-[13px] font-semibold text-gray-700 font-['Inter']">Target Level</label>
+                  <select 
+                    value={uploadLevel}
+                    onChange={(e) => onSetUploadLevel(e.target.value)}
+                    className="w-full h-[40px] px-3 bg-white border border-[#D9D9D9] rounded-[8px] text-[14px] font-['Inter'] outline-none focus:border-[#8B0000] font-bold cursor-pointer"
+                  >
+                    {levels.filter(l => l !== "All Levels").map(lvl => (
+                      <option key={lvl} value={lvl}>Level {lvl}</option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* منطقة السحب والإفلات */}
+                <div className="w-full h-[130px] border-2 border-dashed border-slate-200 rounded-[10px] flex flex-col items-center justify-center bg-slate-50/50 p-4 cursor-pointer hover:border-slate-300 transition-colors group">
+                  <span className="text-[26px] mb-1 group-hover:scale-115 transition-transform">📁</span>
+                  <span className="text-[13.3px] font-normal text-[#45556C] font-['Inter']">Drag & Drop file here</span>
+                  <span className="text-[11px] text-gray-400 mt-0.5 font-['Inter']">or click to browse local storage</span>
+                </div>
+
+                {/* زر الإرسال */}
+                <button
+                  type="submit"
+                  disabled={!newFileName.trim()}
+                  className="w-full h-[42px] bg-gradient-to-r from-[#8B0000] to-[#B22222] text-white rounded-[8px] font-bold text-[14px] shadow-sm transition-all disabled:opacity-40 mt-2 hover:shadow-md"
+                >
+                  Publish Content
+                </button>
+              </form>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+  );
+}
