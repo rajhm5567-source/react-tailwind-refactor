@@ -1,9 +1,9 @@
 import { useState } from 'react';
-// استيراد الواجهات الأربعة الجاهزة في النظام بالكامل
-import StudentManagement from './components/StudentManagement';
+// استيراد المكونات Container الجديدة
+import StudentManagementContainer from './components/StudentManagementContainer';
 import SignIn from './components/SignIn';
-import RoomManagement from './components/RoomManagement';
-import CurriculumManagement from './components/CurriculumManagement';
+import RoomManagementContainer from './components/RoomManagementContainer';
+import CurriculumManagementContainer from './components/CurriculumManagementContainer';
 import Sidebar from './components/layout/Sidebar';
 import PageHeader from './components/layout/PageHeader';
 
@@ -23,6 +23,7 @@ function RenderSystemShell({ viewTitle, children, currentView, onViewChange, onL
           <main className="flex-1 p-8 overflow-y-auto bg-[#F8FAFC]">
             {children}
           </main>
+
         </div>
 
       </div>
@@ -56,17 +57,17 @@ export default function App() {
     <>
       {/* 2. واجهة إدارة القاعات والحجوزات الكاملة */}
       {currentView === 'Room Management' && (
-        <RoomManagement onLogOut={handleLogOut} onViewChange={handleViewChange} />
+        <RoomManagementContainer onLogOut={handleLogOut} onViewChange={handleViewChange} />
       )}
 
       {/* 3. واجهة إدارة المناهج والملفات الكاملة */}
       {currentView === 'Curriculum Management' && (
-        <CurriculumManagement onLogOut={handleLogOut} onViewChange={handleViewChange} />
+        <CurriculumManagementContainer onLogOut={handleLogOut} onViewChange={handleViewChange} />
       )}
 
-      {/* 4. واجهة إدارة الطلاب المكتملة (تم ربطها بنجاح هنا) */}
+      {/* 4. واجهة إدارة الطلاب المكتملة */}
       {currentView === 'Student Management' && (
-        <StudentManagement onLogOut={handleLogOut} onViewChange={handleViewChange} />
+        <StudentManagementContainer onLogOut={handleLogOut} onViewChange={handleViewChange} />
       )}
 
       {/* ======================================================================= */}
