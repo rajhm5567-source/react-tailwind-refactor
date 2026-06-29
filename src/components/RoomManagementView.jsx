@@ -1,110 +1,307 @@
-// // src/components/RoomManagementView.jsx
-// import React, { useState } from 'react';
+import Sidebar from './layout/Sidebar';
+import PageHeader from './layout/PageHeader';
 
-// const initialRooms = [
-//   { id: '101', name: 'Lecture Hall 101', type: 'Standard Classroom', capacity: 30, status: 'Available', currentClass: 'None' },
-//   { id: '102', name: 'Lecture Hall 102', type: 'Standard Classroom', capacity: 25, status: 'Occupied', currentClass: 'English Conversation B2' },
-//   { id: '103', name: 'Multimedia Lab A', type: 'Computer Lab', capacity: 20, status: 'Occupied', currentClass: 'German Intensive A1' },
-//   { id: '104', name: 'VIP Seminar Room', type: 'Conference Room', capacity: 12, status: 'Available', currentClass: 'None' },
-//   { id: '201', name: 'Lecture Hall 201', type: 'Standard Classroom', capacity: 35, status: 'Maintenance', currentClass: 'None' },
-// ];
+export default function RoomManagementView({
+  onLogOut,
+  onViewChange,
+  timeSlots,
+  teachers,
+  selectedDate,
+  studentAssignments,
+  mockAvailableStudents,
+  selectedStudentsForNotify,
+  studentIdInput,
+  levelInput,
+  isFixedDuration,
+  currentCourse,
+  selectedCell,
+  activeLesson,
+  notificationCell,
+  onDateChange,
+  onEmptyCellClick,
+  onOpenNotificationModal,
+  onToggleStudentSelection,
+  onSendNotifications,
+  onConfirmBooking,
+  onDeleteBooking,
+  onSetSelectedCell,
+  onSetActiveLesson,
+  onSetNotificationCell,
+  onSetStudentIdInput,
+  onSetLevelInput,
+  onSetIsFixedDuration,
+}) {
+  return (
+    <div className="flex min-h-screen bg-[#444444] p-6 font-sans justify-center items-center relative">
+      <div className="flex w-full max-w-[1841px] h-[851px] bg-[#F8FAFC] rounded-[2px] overflow-hidden border border-white/10 shadow-2xl">
+        
+        <Sidebar currentView="Room Management" onViewChange={onViewChange} onLogOut={onLogOut} />
 
-// export default function RoomManagementView() {
-//   const [rooms, setRooms] = useState(initialRooms);
-//   const [filterStatus, setFilterStatus] = useState('All');
+        {/* Right Content */}
+        <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
+          <PageHeader variant="room" title="Room Management" />
 
-//   const filteredRooms = filterStatus === 'All' 
-//     ? rooms 
-//     : rooms.filter(r => r.status === filterStatus);
+          {/* Main Area */}
+          <main className="flex-1 p-8 overflow-y-auto bg-[#F8FAFC] flex flex-col gap-6">
+            
+            {/* Top Controls */}
+            <div className="flex items-end justify-between gap-4 bg-white p-4 rounded-[12px] border border-slate-100 shadow-sm">
+              <div className="flex flex-col gap-2 w-[140px]">
+                <label className="text-[14px] font-bold text-gray-700 font-['Inter']">Courses</label>
+                <select className="w-full h-[40px] px-3 bg-white border border-[#D9D9D9] rounded-[8px] text-[15px] font-['Inter'] outline-none focus:border-[#8B0000]">
+                  <option>English</option>
+                  <option>German</option>
+                  <option>French</option>
+                </select>
+              </div>
 
-//   return (
-//     <div className="space-y-6 text-left font-['Inter']">
-//       {/* بطاقات الإحصائيات السريعة */}
-//       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-//         <div className="bg-white p-6 rounded-[14px] border border-slate-200/60 shadow-sm flex items-center justify-between">
-//           <div>
-//             <h3 className="text-slate-400 text-[13px] font-medium uppercase tracking-wider">Total Lecture Halls</h3>
-//             <p className="text-slate-800 text-[28px] font-bold mt-1 font-mono">{rooms.length} Rooms</p>
-//           </div>
-//           <span className="text-3xl bg-slate-100 p-3 rounded-xl">🏫</span>
-//         </div>
-//         <div className="bg-white p-6 rounded-[14px] border border-slate-200/60 shadow-sm flex items-center justify-between">
-//           <div>
-//             <h3 className="text-slate-400 text-[13px] font-medium uppercase tracking-wider">Available Now</h3>
-//             <p className="text-green-600 text-[28px] font-bold mt-1 font-mono">{rooms.filter(r => r.status === 'Available').length} Rooms</p>
-//           </div>
-//           <span className="text-3xl bg-green-50 p-3 rounded-xl">🟢</span>
-//         </div>
-//         <div className="bg-white p-6 rounded-[14px] border border-slate-200/60 shadow-sm flex items-center justify-between">
-//           <div>
-//             <h3 className="text-slate-400 text-[13px] font-medium uppercase tracking-wider">Under Maintenance</h3>
-//             <p className="text-amber-600 text-[28px] font-bold mt-1 font-mono">{rooms.filter(r => r.status === 'Maintenance').length}</p>
-//           </div>
-//           <span className="text-3xl bg-amber-50 p-3 rounded-xl">🛠️</span>
-//         </div>
-//       </div>
+              <div className="flex flex-col gap-2 w-[200px]">
+                <label className="text-[14px] font-bold text-gray-700 font-['Inter']">Date</label>
+                <input 
+                  type="date" 
+                  value={selectedDate}
+                  onChange={(e) => onDateChange(e.target.value)}
+                  className="w-full h-[40px] px-3 bg-white border border-[#D9D9D9] rounded-[8px] text-[15px] font-['Inter'] outline-none focus:border-[#8B0000] cursor-pointer text-gray-800"
+                />
+              </div>
+            </div>
 
-//       {/* شريط الفلاتر والإجراءات */}
-//       <div className="bg-white rounded-[14px] border border-slate-200/60 shadow-sm overflow-hidden">
-//         <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/70">
-//           <div className="flex items-center gap-4">
-//             <h3 className="font-bold text-slate-800 text-[16px]">Halls & Reservation Matrix</h3>
-//             <div className="flex bg-slate-200/60 p-1 rounded-lg text-xs font-medium">
-//               {['All', 'Available', 'Occupied', 'Maintenance'].map((status) => (
-//                 <button
-//                   key={status}
-//                   onClick={() => setFilterStatus(status)}
-//                   className={`px-3 py-1.5 rounded-md transition-colors ${filterStatus === status ? 'bg-white text-[#8B0000] shadow-xs font-semibold' : 'text-slate-600 hover:text-slate-900'}`}
-//                 >
-//                   {status}
-//                 </button>
-//               ))}
-//             </div>
-//           </div>
-//           <button 
-//             onClick={() => alert('Feature to create booking coming soon!')}
-//             className="h-[38px] px-4 bg-[#8B0000] text-white rounded-[8px] text-[13px] font-semibold hover:bg-[#660000] transition-all shadow-xs"
-//           >
-//             + Create New Booking
-//           </button>
-//         </div>
+            {/* الجدول */}
+            <div className="flex-1 bg-white rounded-[14px] shadow-sm overflow-auto border border-slate-100 min-h-[500px]">
+              <table className="w-full text-center border-collapse min-w-[1000px]">
+                <thead className="h-[55px] bg-[#F9FAFB] border-b border-slate-200 sticky top-0 z-10">
+                  <tr>
+                    <th className="p-3 text-left w-[180px] text-[14px] font-bold text-[#364153] font-['Inter'] bg-[#F9FAFB]">
+                      Time / Teacher
+                    </th>
+                    {teachers.map((teacher, index) => (
+                      <th key={index} className="p-3 text-[14px] font-bold text-[#364153] font-['Inter'] w-[120px]">
+                        {teacher}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {timeSlots.map((time) => (
+                    <tr key={time} className="h-[90px]">
+                      <td className="p-4 text-left text-[13px] font-bold text-[#4A5565] font-['Inter'] bg-gray-50 border-r border-slate-50">
+                        {time}
+                      </td>
+                      {teachers.map((teacher) => {
+                        const assignment = studentAssignments.find(a => a.time === time && a.teacher === teacher);
+                        return (
+                          <td key={teacher} className="p-2 border-r border-slate-50 relative align-middle h-full">
+                            {assignment ? (
+                              <div 
+                                onClick={() => onSetActiveLesson(assignment)}
+                                className="w-full h-full flex flex-col justify-center items-center bg-[#8B0000] rounded-[10px] shadow-md text-white min-h-[70px] cursor-pointer hover:bg-[#A30000] transition-colors"
+                              >
+                                <span className="text-[11px] font-medium opacity-90">Student ID:</span>
+                                <span className="text-[13px] font-bold font-mono">{assignment.id}</span>
+                              </div>
+                            ) : (
+                              /* المربع الفاضي يحتوي على خيارين الآن عند تمرير الماوس */
+                              <div className="w-full h-full flex justify-center items-center gap-3 border border-dashed border-slate-200 rounded-[10px] text-gray-300 min-h-[70px] p-2 group hover:border-slate-300 transition-colors">
+                                <button 
+                                  onClick={() => onEmptyCellClick(time, teacher)}
+                                  className="text-[20px] text-gray-400 hover:text-[#8B0000] hover:scale-125 transition-transform"
+                                  title="حجز يدوي"
+                                >
+                                  +
+                                </button>
+                                <button 
+                                  onClick={() => onOpenNotificationModal(time, teacher)}
+                                  className="w-7 h-7 bg-slate-100 hover:bg-[#8B0000] text-slate-500 hover:text-white rounded-full flex items-center justify-center text-[12px] transition-all shadow-sm"
+                                  title="تعبئة تلقائية عبر الإشعارات"
+                                >
+                                  🔔
+                                </button>
+                              </div>
+                            )}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
-//         {/* جدول البيانات الكامل المنسق */}
-//         <div className="overflow-x-auto">
-//           <table className="w-full text-left border-collapse">
-//             <thead>
-//               <tr className="border-b border-slate-100 text-slate-400 text-[12px] uppercase tracking-wider font-semibold bg-slate-50/30">
-//                 <th className="py-4 px-6">Room ID</th>
-//                 <th className="py-4 px-6">Room Name</th>
-//                 <th className="py-4 px-6">Type</th>
-//                 <th className="py-4 px-6">Max Capacity</th>
-//                 <th className="py-4 px-6">Current Activity</th>
-//                 <th className="py-4 px-6">Status</th>
-//               </tr>
-//             </thead>
-//             <tbody className="text-[14px] text-slate-700 divide-y divide-slate-100">
-//               {filteredRooms.map((room) => (
-//                 <tr key={room.id} className="hover:bg-slate-50/50 transition-colors">
-//                   <td className="py-4 px-6 font-mono font-medium text-slate-500">{room.id}</td>
-//                   <td className="py-4 px-6 font-semibold text-slate-900">{room.name}</td>
-//                   <td className="py-4 px-6 text-slate-500">{room.type}</td>
-//                   <td className="py-4 px-6 font-mono">{room.capacity} Students</td>
-//                   <td className="py-4 px-6 text-sm text-slate-600 italic">{room.currentClass}</td>
-//                   <td className="py-4 px-6">
-//                     <span className={`px-2.5 py-1 rounded-full text-[11px] font-semibold ${
-//                       room.status === 'Available' ? 'bg-green-50 text-green-700 border border-green-200' :
-//                       room.status === 'Occupied' ? 'bg-blue-50 text-blue-700 border border-blue-200' :
-//                       'bg-amber-50 text-amber-700 border border-amber-200'
-//                     }`}>
-//                       {room.status}
-//                     </span>
-//                   </td>
-//                 </tr>
-//               ))}
-//             </tbody>
-//           </table>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
+          </main>
+        </div>
+      </div>
+
+      {/* ==================== 1. مودال الحجز الجديد (New Booking) ==================== */}
+      {selectedCell && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-[100px]">
+          <div className="w-[448px] max-w-[448px] h-[478.2px] bg-white rounded-[14px] p-6 flex flex-col gap-6 shadow-2xl relative border border-slate-100 font-['Inter']">
+            <div className="flex items-center justify-between w-[400px] h-[28px]">
+              <h2 className="text-[19.2px] font-semibold text-[#101828] leading-[28px]">New Booking</h2>
+              <button onClick={() => onSetSelectedCell(null)} className="w-7 h-7 flex items-center justify-center rounded-[10px] hover:bg-slate-100 text-[#4A5565] transition-colors text-lg">✕</button>
+            </div>
+            <div className="flex flex-col gap-4 w-[400px] h-[312.6px]">
+              <div className="w-[400px] h-[85px] bg-[#F9FAFB] rounded-[10px] p-3 flex flex-col justify-center text-left">
+                <p className="text-[13.3px] font-normal text-[#4A5565] leading-[20px]">
+                  Teacher: <span className="font-semibold text-[#101828]">{selectedCell.teacher}</span> | Course: <span className="font-semibold text-[#8B0000]">{currentCourse}</span>
+                </p>
+                <p className="text-[12.7px] font-normal text-[#4A5565] leading-[20px] mt-1">
+                  Time: <span className="font-medium text-[#101828]">{selectedCell.time}</span>
+                </p>
+              </div>
+              <div className="flex flex-col gap-2 w-[400px]">
+                <label className="text-[13.3px] font-medium text-[#364153] leading-[20px] text-left">Student ID/Name</label>
+                <input 
+                  type="text" 
+                  value={studentIdInput} 
+                  onChange={(e) => onSetStudentIdInput(e.target.value)} 
+                  placeholder="Enter student ID/Name" 
+                  className="w-[400px] h-[38px] border border-[#D1D5DC] rounded-[10px] px-3 text-[14px] outline-none focus:border-[#8B0000]"
+                />
+              </div>
+              <div className="flex flex-col gap-2 w-[400px]">
+                <label className="text-[14.4px] font-normal text-black text-left">Level</label>
+                <select 
+                  value={levelInput} 
+                  onChange={(e) => onSetLevelInput(e.target.value)} 
+                  className="w-[400px] h-[35.6px] border border-[#D1D5DC] rounded-[10px] px-3 text-[14.9px] bg-white focus:border-[#8B0000] outline-none"
+                >
+                  <option value="A1">A1</option>
+                  <option value="A2">A2</option>
+                  <option value="B1">B1</option>
+                  <option value="B2">B2</option>
+                  <option value="C1">C1</option>
+                </select>
+              </div>
+              <div className="w-[400px] h-[48px] bg-[#F9FAFB] rounded-[10px] px-3 flex items-center justify-between">
+                <span className="text-[13.3px] font-medium text-[#364153]">Fixed for Course Duration</span>
+                <div 
+                  onClick={() => onSetIsFixedDuration(!isFixedDuration)} 
+                  className={`w-[44px] h-[24px] rounded-full p-[4px] cursor-pointer flex items-center transition-colors ${isFixedDuration ? 'bg-[#8B0000]' : 'bg-gray-300'}`}
+                >
+                  <div className={`w-[16px] h-[16px] bg-white rounded-full shadow-md transform transition-transform ${isFixedDuration ? 'translate-x-[20px]' : 'translate-x-0'}`} />
+                </div>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 w-[400px] h-[41.6px]">
+              <button 
+                onClick={() => onSetSelectedCell(null)} 
+                className="w-[194.8px] h-[41.6px] border border-[#D1D5DC] rounded-[10px] text-[14.5px] font-medium text-[#0A0A0A] hover:bg-slate-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={onConfirmBooking} 
+                disabled={!studentIdInput.trim()} 
+                className="w-[193.2px] h-[41.6px] bg-gradient-to-r from-[#8B0000] to-[#B22222] text-white rounded-[10px] text-[14.5px] font-semibold transition-all disabled:opacity-40"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ==================== 2. مودال تفاصيل الحصة (Lesson Details) ==================== */}
+      {activeLesson && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-[100px]">
+          <div className="w-[448px] max-w-[448px] bg-white rounded-[14px] p-6 flex flex-col gap-6 shadow-2xl relative border border-slate-100 font-['Inter']">
+            <div className="flex items-center justify-between w-full h-[28px]">
+              <h2 className="text-[19.2px] font-semibold text-[#101828] leading-[28px]">Lesson Details</h2>
+              <button onClick={() => onSetActiveLesson(null)} className="w-7 h-7 flex items-center justify-center rounded-[10px] hover:bg-slate-100 text-[#4A5565] transition-colors">✕</button>
+            </div>
+            <div className="flex flex-col gap-4 w-full">
+              <div className="p-4 bg-slate-50 rounded-[10px] border border-slate-100 flex flex-col gap-2 text-left">
+                <p className="text-[14px] text-slate-600">Teacher: <span className="font-bold text-slate-900">{activeLesson.teacher}</span></p>
+                <p className="text-[14px] text-slate-600">Time: <span className="font-bold text-slate-900">{activeLesson.time}</span></p>
+                <p className="text-[14px] text-slate-600">Course: <span className="font-bold text-[#8B0000]">{currentCourse}</span></p>
+                <p className="text-[14px] text-slate-600">Student ID / Name: <span className="font-bold text-slate-900 font-mono">{activeLesson.id}</span></p>
+                <p className="text-[14px] text-slate-600">Level: <span className="font-bold text-slate-900">{activeLesson.level}</span></p>
+                <p className="text-[14px] text-slate-600">Duration Status: <span className="font-bold text-slate-900">{activeLesson.isFixed ? 'Fixed (Full Course)' : 'Single Session'}</span></p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 w-full">
+              <button 
+                onClick={() => onSetActiveLesson(null)} 
+                className="flex-1 h-[41.6px] border border-[#D1D5DC] rounded-[10px] text-[14.5px] font-medium text-slate-700 hover:bg-slate-50 transition-colors"
+              >
+                Close
+              </button>
+              <button 
+                onClick={() => onDeleteBooking(activeLesson.time, activeLesson.teacher)} 
+                className="flex-1 h-[41.6px] bg-red-50 text-red-600 border border-red-200 rounded-[10px] text-[14.5px] font-medium hover:bg-red-100 transition-colors"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ==================== 3. مودال التعبئة التلقائية والإشعارات الجديد (Auto-Fill / Invites) ==================== */}
+      {notificationCell && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-[100px]">
+          <div className="w-[448px] max-w-[448px] bg-white rounded-[14px] p-6 flex flex-col gap-6 shadow-2xl relative border border-slate-100 font-['Inter']">
+            
+            <div className="flex items-center justify-between w-full h-[28px]">
+              <h2 className="text-[19.2px] font-semibold text-[#101828] leading-[28px]">Auto-Fill (Send Invites)</h2>
+              <button onClick={() => onSetNotificationCell(null)} className="w-7 h-7 flex items-center justify-center rounded-[10px] hover:bg-slate-100 text-[#4A5565] transition-colors text-lg">✕</button>
+            </div>
+            
+            {/* تفاصيل تفاعلية عن الحصة المستهدفة */}
+            <div className="w-full bg-[#F9FAFB] rounded-[10px] p-3 text-left">
+              <p className="text-[13.3px] font-normal text-[#4A5565]">
+                Targeting Slot: <span className="font-semibold text-[#101828]">{notificationCell.teacher}</span> at <span className="font-semibold text-[#8B0000]">{notificationCell.time}</span>
+              </p>
+            </div>
+
+            {/* قائمة الطلاب مع خانات الاختيار المتعدد */}
+            <div className="flex flex-col gap-2 w-full max-h-[220px] overflow-y-auto pr-1">
+              <label className="text-[13.3px] font-medium text-[#364153] text-left mb-1">Select Students to Notify:</label>
+              {mockAvailableStudents.map(student => (
+                <div 
+                  key={student.id} 
+                  onClick={() => onToggleStudentSelection(student.id)}
+                  className={`flex items-center justify-between p-3 rounded-[10px] border cursor-pointer transition-all ${
+                    selectedStudentsForNotify.includes(student.id) 
+                      ? 'border-[#8B0000] bg-red-50/30' 
+                      : 'border-slate-100 bg-white hover:bg-slate-50'
+                  }`}
+                >
+                  <div className="flex flex-col text-left">
+                    <span className="text-[14px] font-medium text-slate-800">{student.name}</span>
+                    <span className="text-[11px] text-slate-400 font-mono">{student.id} - Level: {student.level}</span>
+                  </div>
+                  {/* علامة المربع المختار */}
+                  <div className={`w-5 h-5 rounded-md border flex items-center justify-center text-[11px] font-bold transition-colors ${
+                    selectedStudentsForNotify.includes(student.id) ? 'bg-[#8B0000] border-[#8B0000] text-white' : 'border-slate-300 bg-white'
+                  }`}>
+                    {selectedStudentsForNotify.includes(student.id) && '✓'}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* الأزرار السفلى للمودال */}
+            <div className="flex items-center gap-3 w-full">
+              <button 
+                onClick={() => onSetNotificationCell(null)} 
+                className="flex-1 h-[41.6px] border border-[#D1D5DC] rounded-[10px] text-[14.5px] font-medium text-[#0A0A0A] hover:bg-slate-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={onSendNotifications}
+                disabled={selectedStudentsForNotify.length === 0}
+                className="flex-1 h-[41.6px] bg-gradient-to-r from-[#8B0000] to-[#B22222] text-white rounded-[10px] text-[15.5px] font-medium shadow-md transition-all disabled:opacity-40"
+              >
+                Send Invites ({selectedStudentsForNotify.length})
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+}
