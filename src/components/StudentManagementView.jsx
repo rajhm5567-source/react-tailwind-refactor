@@ -1,98 +1,101 @@
-// // src/components/StudentManagementView.jsx
-// import React, { useState } from 'react';
+import logoImg from '../assets/Logo.png';
+import Sidebar from './layout/Sidebar';
+import PageHeader from './layout/PageHeader';
 
-// const initialStudents = [
-//   { id: 'STU-9921', name: 'Ahmad Al-Saeed', email: 'ahmad@example.com', level: 'English B1', batch: 'Morning Shift', status: 'Active' },
-//   { id: 'STU-9922', name: 'Sarah Mansour', email: 'sarah.m@example.com', level: 'French A2', batch: 'Evening Shift', status: 'Active' },
-//   { id: 'STU-9923', name: 'Omar Farooq', email: 'omar.f@example.com', level: 'German Intensive A1', batch: 'Morning Shift', status: 'Suspended' },
-//   { id: 'STU-9924', name: 'Lina Kabbani', email: 'lina@example.com', level: 'English C1', batch: 'Evening Shift', status: 'Active' },
-//   { id: 'STU-9925', name: 'Youssef Hussein', email: 'youssef@example.com', level: 'Spanish Basic', batch: 'Morning Shift', status: 'Active' },
-// ];
+export default function StudentManagementView({
+  onLogOut,
+  onViewChange,
+  students,
+  searchId,
+  generatedCard,
+  errorMsg,
+  onSearchIdChange,
+  onGenerateCard,
+  onSetGeneratedCard,
+}) {
+  return (
+    <div className="flex min-h-screen bg-[#444444] p-[100px] font-sans justify-center items-center">
+      <div className="flex w-full max-w-[1841px] h-[851px] bg-[#F8FAFC] rounded-[2px] overflow-hidden border border-white/10 shadow-2xl">
+        
+        <Sidebar variant="student" onViewChange={onViewChange} onLogOut={onLogOut} />
 
-// export default function StudentManagementView() {
-//   const [students, setStudents] = useState(initialStudents);
-//   const [searchQuery, setSearchQuery] = useState('');
-//   const [batchFilter, setBatchFilter] = useState('All Batches');
+        {/* Content Box */}
+        <div className="flex-1 flex flex-col min-w-0">
+          <PageHeader variant="student" title="Student Management" />
 
-//   const filteredStudents = students.filter(student => {
-//     const matchesSearch = student.name.toLowerCase().includes(searchQuery.toLowerCase()) || student.id.includes(searchQuery);
-//     const matchesBatch = batchFilter === 'All Batches' || student.batch === batchFilter;
-//     return matchesSearch && matchesBatch;
-//   });
+          <main className="flex-1 p-[32px] overflow-y-auto bg-[#F8FAFC] flex flex-col gap-[24px]">
+            <div className="bg-white rounded-[14px] shadow-sm overflow-hidden border border-slate-100">
+              <table className="w-full text-left border-collapse">
+                <thead className="bg-slate-50 border-b border-slate-200">
+                  <tr>
+                    <th className="p-[16px_24px] text-[13.5px] font-bold text-[#4A5565]">Academic ID</th>
+                    <th className="p-[16px_24px] text-[13.5px] font-bold text-[#4A5565]">Student Name</th>
+                    <th className="p-[16px_24px] text-[13.5px] font-bold text-[#4A5565]">Status</th>
+                    <th className="p-[16px_24px] text-[13.5px] font-bold text-[#4A5565]">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {students.map((student) => (
+                    <tr key={student.id} className="hover:bg-slate-50/50 transition-colors">
+                      <td className="p-[24px] text-[13px] text-[#364153] font-mono">{student.id}</td>
+                      <td className="p-[24px] text-[13px] font-medium text-[#101828]">{student.name}</td>
+                      <td className="p-[24px]">
+                        <span className={`inline-flex items-center px-[12px] py-[4px] rounded-full text-[11px] font-medium ${student.status === 'Active' ? 'bg-[#F0FDF4] text-[#008236]' : 'bg-gray-100 text-gray-600'}`}>
+                          {student.status}
+                        </span>
+                      </td>
+                      <td className="p-[24px]">
+                        <button onClick={() => onGenerateCard(student.id)} className="px-[16px] py-[8px] bg-[#F3F4F6] text-[#364153] text-[13px] font-medium rounded-[10px] hover:bg-[#e4e6eb] transition-colors">
+                          View Card
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
-//   return (
-//     <div className="space-y-6 text-left font-['Inter']">
-//       {/* أدوات البحث والفلترة العلوية */}
-//       <div className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-white p-4 rounded-[14px] border border-slate-200/60 shadow-sm">
-//         <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-//           <input 
-//             type="text" 
-//             placeholder="Search student by name or ID..." 
-//             value={searchQuery}
-//             onChange={(e) => setSearchQuery(e.target.value)}
-//             className="h-[38px] px-3 w-[24px] min-w-[240px] bg-white border border-slate-200 rounded-lg text-[13px] outline-none focus:border-[#8B0000] transition-colors" 
-//           />
-//           <select 
-//             value={batchFilter}
-//             onChange={(e) => setBatchFilter(e.target.value)}
-//             className="h-[38px] px-3 bg-white border border-slate-200 rounded-lg text-[13px] outline-none text-slate-600 focus:border-[#8B0000] cursor-pointer"
-//           >
-//             <option>All Batches</option>
-//             <option>Morning Shift</option>
-//             <option>Evening Shift</option>
-//           </select>
-//         </div>
-//         <button 
-//           onClick={() => alert('Add student form workflow coming next!')}
-//           className="h-[38px] px-4 bg-[#8B0000] text-white rounded-[8px] text-[13px] font-semibold hover:bg-[#660000] transition-colors w-full sm:w-auto text-center shadow-xs"
-//         >
-//           + Add New Student
-//         </button>
-//       </div>
+            {/* Generator Section */}
+            <div className="bg-white rounded-[14px] p-[24px] shadow-sm border border-slate-100 flex flex-col gap-[16px]">
+              <h3 className="text-[16px] font-bold text-gray-800">ID Card Generator</h3>
+              <div className="flex gap-[16px]">
+                <input 
+                  type="text" 
+                  placeholder="Enter Academic ID" 
+                  value={searchId}
+                  onChange={(e) => onSearchIdChange(e.target.value)}
+                  className="flex-1 h-[48px] px-[16px] border border-gray-300 rounded-lg text-[14px] focus:outline-none focus:border-[#8B0000]"
+                />
+                <button onClick={() => onGenerateCard(searchId)} className="h-[48px] px-[32px] bg-[#8B0000] text-white font-bold text-[14px] rounded-lg hover:bg-red-950 transition-all">
+                  Generate
+                </button>
+              </div>
+              {errorMsg && <div className="text-red-600 text-[14px]">{errorMsg}</div>}
 
-//       {/* جدول الطلاب الشامل والكامل */}
-//       <div className="bg-white rounded-[14px] border border-slate-200/60 shadow-sm overflow-hidden">
-//         <div className="overflow-x-auto">
-//           <table className="w-full text-left border-collapse">
-//             <thead>
-//               <tr className="border-b border-slate-100 text-slate-400 text-[12px] uppercase tracking-wider font-semibold bg-slate-50/30">
-//                 <th className="py-4 px-6">Student ID</th>
-//                 <th className="py-4 px-6">Full Name</th>
-//                 <th className="py-4 px-6">Email Address</th>
-//                 <th className="py-4 px-6">Registered Level</th>
-//                 <th className="py-4 px-6">Batch Time</th>
-//                 <th className="py-4 px-6">Status</th>
-//               </tr>
-//             </thead>
-//             <tbody className="text-[14px] text-slate-700 divide-y divide-slate-100">
-//               {filteredStudents.length > 0 ? (
-//                 filteredStudents.map((student) => (
-//                   <tr key={student.id} className="hover:bg-slate-50/50 transition-colors">
-//                     <td className="py-4 px-6 font-mono font-medium text-slate-500">{student.id}</td>
-//                     <td className="py-4 px-6 font-semibold text-slate-900">{student.name}</td>
-//                     <td className="py-4 px-6 text-slate-500 text-sm">{student.email}</td>
-//                     <td className="py-4 px-6 font-medium text-slate-700">{student.level}</td>
-//                     <td className="py-4 px-6 text-slate-600">{student.batch}</td>
-//                     <td className="py-4 px-6">
-//                       <span className={`px-2.5 py-1 rounded-full text-[11px] font-semibold ${
-//                         student.status === 'Active' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'
-//                       }`}>
-//                         {student.status}
-//                       </span>
-//                     </td>
-//                   </tr>
-//                 ))
-//               ) : (
-//                 <tr>
-//                   <td colSpan="6" className="py-12 text-center text-slate-400 italic">
-//                     ❌ No students matching your search filters found.
-//                   </td>
-//                 </tr>
-//               )}
-//             </tbody>
-//           </table>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
+              {generatedCard && (
+                <div className="mt-4 bg-slate-900 text-white p-[24px] rounded-[15px] max-w-[400px] border-l-8 border-[#8B0000] shadow-xl self-center w-full relative">
+                  <button onClick={() => onSetGeneratedCard(null)} className="absolute top-3 right-3 text-gray-400 hover:text-white">✕</button>
+                  <div className="flex items-center gap-[12px] border-b border-slate-800 pb-3 mb-3">
+                    <img src={logoImg} alt="Linguaphone" className="w-[35px] h-[35px] bg-white rounded-full p-1" />
+                    <div>
+                      <h3 className="text-[12px] font-bold tracking-wider">LINGUAPHONE</h3>
+                      <p className="text-[9px] text-red-400 font-semibold uppercase">Student ID Card</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-[16px] items-center">
+                    <div className="w-[60px] h-[60px] bg-slate-800 rounded-[10px] flex items-center justify-center text-[28px]">👤</div>
+                    <div className="text-[13px] flex flex-col gap-[2px]">
+                      <p className="text-gray-400">Name: <span className="text-white font-semibold">{generatedCard.name}</span></p>
+                      <p className="text-gray-400">ID: <span className="text-red-400 font-mono font-bold">{generatedCard.id}</span></p>
+                      <p className="text-gray-400">Course: <span className="text-white">{generatedCard.major}</span></p>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+  );
+}
